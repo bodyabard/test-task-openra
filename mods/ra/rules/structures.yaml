@@ -668,7 +668,7 @@ DOME:
 		Prerequisites: proc, ~techlevel.medium
 		Description: actor-dome.description
 	Valued:
-		Cost: 1500
+		Cost: 100
 	Tooltip:
 		Name: actor-dome.name
 	Building:
@@ -1268,7 +1268,7 @@ PROC:
 		Prerequisites: anypower, ~techlevel.infonly
 		Description: actor-proc.description
 	Valued:
-		Cost: 1400
+		Cost: 100
 	Tooltip:
 		Name: actor-proc.name
 	Building:
@@ -1410,7 +1410,7 @@ HPAD:
 		Prerequisites: dome, ~structures.allies, ~techlevel.medium
 		Description: actor-hpad.description
 	Valued:
-		Cost: 500
+		Cost: 100
 	Tooltip:
 		Name: actor-hpad.name
 	Building:
@@ -1944,7 +1944,7 @@ TENT:
 		Prerequisites: anypower, ~structures.allies, ~techlevel.infonly
 		Description: actor-tent.description
 	Valued:
-		Cost: 500
+		Cost: 100
 	Tooltip:
 		Name: actor-tent.name
 	Building:

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)openra-sdl2-cs\1.0.40\build\OpenRA-SDL2-CS.targets" Condition="Exists('$(NuGetPackageRoot)openra-sdl2-cs\1.0.40\build\OpenRA-SDL2-CS.targets')" />
+    <Import Project="$(NuGetPackageRoot)openra-openal-cs\1.0.22\build\OpenRA-OpenAL-CS.targets" Condition="Exists('$(NuGetPackageRoot)openra-openal-cs\1.0.22\build\OpenRA-OpenAL-CS.targets')" />
+    <Import Project="$(NuGetPackageRoot)openra-freetype6\1.0.11\build\OpenRA-FreeType6.targets" Condition="Exists('$(NuGetPackageRoot)openra-freetype6\1.0.11\build\OpenRA-FreeType6.targets')" />
+  </ImportGroup>
+</Project>

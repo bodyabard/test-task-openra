@@ -1,0 +1,16 @@
+F:\work\volmiTestProject\test-task-openra\bin\lua51.dll
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Game.deps.json
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Game.dll
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Game.pdb
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Game.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.csproj.AssemblyReference.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.GeneratedMSBuildEditorConfig.editorconfig
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.AssemblyInfoInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.AssemblyInfo.cs
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.csproj.CoreCompileInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.csproj.CopyComplete
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\refint\OpenRA.Game.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\OpenRA.Game.pdb
+F:\work\volmiTestProject\test-task-openra\OpenRA.Game\obj\Debug\ref\OpenRA.Game.dll

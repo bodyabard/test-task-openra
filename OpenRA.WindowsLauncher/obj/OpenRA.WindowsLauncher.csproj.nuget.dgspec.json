@@ -1,0 +1,178 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.WindowsLauncher\\OpenRA.WindowsLauncher.csproj": {}
+  },
+  "projects": {
+    "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
+        "projectName": "OpenRA.Game",
+        "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
+        "packagesPath": "C:\\Users\\Бодя\\.nuget\\packages\\",
+        "outputPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Бодя\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Linguini.Bundle": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "Microsoft.Extensions.DependencyModel": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Mono.NAT": {
+              "target": "Package",
+              "version": "[3.0.4, )"
+            },
+            "OpenRA-Eluant": {
+              "target": "Package",
+              "version": "[1.0.22, )"
+            },
+            "Roslynator.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "SharpZipLib": {
+              "target": "Package",
+              "version": "[1.4.2, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            },
+            "System.Runtime.Loader": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "System.Threading.Channels": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.WindowsLauncher\\OpenRA.WindowsLauncher.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.WindowsLauncher\\OpenRA.WindowsLauncher.csproj",
+        "projectName": "OpenRA.WindowsLauncher",
+        "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.WindowsLauncher\\OpenRA.WindowsLauncher.csproj",
+        "packagesPath": "C:\\Users\\Бодя\\.nuget\\packages\\",
+        "outputPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.WindowsLauncher\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Бодя\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
+                "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "OpenRA-SDL2-CS": {
+              "target": "Package",
+              "version": "[1.0.40, )"
+            },
+            "Roslynator.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.2.0-beta.435, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
