@@ -1216,19 +1216,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Бодя\\.nuget\\packages\\": {}
+    "C:\\Users\\Bohdan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
+      "projectUniqueName": "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
       "projectName": "OpenRA.Game",
-      "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
-      "packagesPath": "C:\\Users\\Бодя\\.nuget\\packages\\",
-      "outputPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\obj\\",
+      "projectPath": "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj",
+      "packagesPath": "C:\\Users\\Bohdan\\.nuget\\packages\\",
+      "outputPath": "D:\\test-task-openra\\OpenRA.Game\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Бодя\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Bohdan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1309,7 +1309,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

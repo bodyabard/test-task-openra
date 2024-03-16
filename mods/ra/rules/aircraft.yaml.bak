@@ -584,7 +584,7 @@ HEALTRAN:
     AttackAircraft:
 		FacingTolerance: 360
 		PersistentTargeting: false
-		AttackType: Default
+		AttackType: Strafe
         AbortOnMovement: true
 	Aircraft:
 		TurnSpeed: 20

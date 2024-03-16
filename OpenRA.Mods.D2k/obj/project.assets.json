@@ -1823,19 +1823,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Бодя\\.nuget\\packages\\": {}
+    "C:\\Users\\Bohdan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Mods.D2k\\OpenRA.Mods.D2k.csproj",
+      "projectUniqueName": "D:\\test-task-openra\\OpenRA.Mods.D2k\\OpenRA.Mods.D2k.csproj",
       "projectName": "OpenRA.Mods.D2k",
-      "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Mods.D2k\\OpenRA.Mods.D2k.csproj",
-      "packagesPath": "C:\\Users\\Бодя\\.nuget\\packages\\",
-      "outputPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Mods.D2k\\obj\\",
+      "projectPath": "D:\\test-task-openra\\OpenRA.Mods.D2k\\OpenRA.Mods.D2k.csproj",
+      "packagesPath": "C:\\Users\\Bohdan\\.nuget\\packages\\",
+      "outputPath": "D:\\test-task-openra\\OpenRA.Mods.D2k\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Бодя\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Bohdan\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1849,11 +1849,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
-              "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj"
+            "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
+              "projectPath": "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj"
             },
-            "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Mods.Common\\OpenRA.Mods.Common.csproj": {
-              "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Mods.Common\\OpenRA.Mods.Common.csproj"
+            "D:\\test-task-openra\\OpenRA.Mods.Common\\OpenRA.Mods.Common.csproj": {
+              "projectPath": "D:\\test-task-openra\\OpenRA.Mods.Common\\OpenRA.Mods.Common.csproj"
             }
           }
         }
@@ -1895,7 +1895,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

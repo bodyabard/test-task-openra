@@ -121,6 +121,7 @@ namespace OpenRA
 		readonly INotifyBecomingIdle[] becomingIdles;
 		readonly INotifyIdle[] tickIdles;
 		readonly IEnumerable<WPos> enabledTargetableWorldPositions;
+		//readonly IMove 
 		bool created;
 
 		internal Actor(World world, string name, TypeDictionary initDict)
@@ -633,6 +634,11 @@ namespace OpenRA
 		public bool HasScriptProperty(string name)
 		{
 			return luaInterface.Value.ContainsKey(name);
+		}
+
+		public bool IsIdleActivity()
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

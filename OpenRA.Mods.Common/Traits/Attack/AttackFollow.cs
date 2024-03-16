@@ -48,6 +48,7 @@ namespace OpenRA.Mods.Common.Traits
 
 		Mobile mobile;
 		AutoTarget autoTarget;
+		IMove move;
 		bool requestedForceAttack;
 		Activity requestedTargetPresetForActivity;
 		bool opportunityForceAttack;
@@ -83,6 +84,7 @@ namespace OpenRA.Mods.Common.Traits
 		{
 			mobile = self.TraitOrDefault<Mobile>();
 			autoTarget = self.TraitOrDefault<AutoTarget>();
+			move = self.TraitOrDefault<IMove>();
 			base.Created(self);
 		}
 
@@ -155,7 +157,12 @@ namespace OpenRA.Mods.Common.Traits
 						IsAiming = CanAimAtTarget(self, OpportunityTarget, opportunityForceAttack);
 				}
 
-				if (self.CurrentActivity != null && self.CurrentActivity.GetType() == typeof(FlyIdle) && IsAiming)
+				if (move != null && IsAiming && Info.AbortOnMovement)
+				{
+					IsAiming = !move.IsMovementInProgress;
+				}
+
+				if (IsAiming)
 				{
 					DoAttack(self, OpportunityTarget);
 				}

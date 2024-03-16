@@ -130,8 +130,6 @@ Heal:
 	ValidTargets: Heal
 	Projectile: Bullet
 		Speed: 1c682
-        ContrailLength: 20
-        ContrailStartColor: 00FF00
 	Warhead@1Eff: FlashTargetsInRadius
 		Radius: 1065
 		ValidRelationships: Ally
