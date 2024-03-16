@@ -1,0 +1,15 @@
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Common.deps.json
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Common.dll
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Common.pdb
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Common.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.csproj.AssemblyReference.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.GeneratedMSBuildEditorConfig.editorconfig
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.AssemblyInfoInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.AssemblyInfo.cs
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.csproj.CoreCompileInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.csproj.CopyComplete
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\refint\OpenRA.Mods.Common.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\OpenRA.Mods.Common.pdb
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Common\obj\Debug\ref\OpenRA.Mods.Common.dll

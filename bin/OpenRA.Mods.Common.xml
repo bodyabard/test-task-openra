@@ -1,0 +1,1237 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenRA.Mods.Common</name>
+    </assembly>
+    <members>
+        <member name="M:OpenRA.Mods.Common.Activities.Enter.TickInner(OpenRA.Actor,OpenRA.Traits.Target@,System.Boolean)">
+            <summary>
+            Called early in the activity tick to allow subclasses to update state.
+            Call Cancel(self, true) if it is no longer valid to enter.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Activities.Enter.TryStartEnter(OpenRA.Actor,OpenRA.Actor)">
+            <summary>
+            Called when the actor is ready to transition from approaching to entering the target actor.
+            Return true to start entering, or false to wait in the WaitingToEnter state.
+            Call Cancel(self, true) before returning false if it is no longer valid to enter.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Activities.Enter.OnEnterComplete(OpenRA.Actor,OpenRA.Actor)">
+            <summary>
+            Called when the actor has entered the target actor.
+            Actor will be Killed/Disposed or they will enter/exit unharmed.
+            Depends on either the EnterBehaviour of the actor or the requirements of an overriding function.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Activities.FindAndDeliverResources.ClosestHarvestablePos(OpenRA.Actor)">
+            <summary>
+            Finds the closest harvestable pos between the current position of the harvester
+            and the last order location.
+            </summary>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.IDockClient.DockClientManager">
+            <summary>When null, the client should act as if it can dock but never do.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IDockClient.IsDockingPossible(OpenRA.Primitives.BitSet{OpenRA.Mods.Common.Traits.DockType},System.Boolean)">
+            <summary>Is this client allowed to dock.</summary>
+            <remarks>
+            Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.
+            Function should only be called from within <see cref="T:OpenRA.Mods.Common.Traits.IDockClient"/> or <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/>.
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IDockClient.CanDockAt(OpenRA.Actor,OpenRA.Mods.Common.Traits.IDockHost,System.Boolean,System.Boolean)">
+            <summary>Is this client allowed to dock to <paramref name="host"/>.</summary>
+            <remarks>
+            Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.
+            Function should only be called from within <see cref="T:OpenRA.Mods.Common.Traits.IDockClient"/> or <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/>.
+            </remarks>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.IDockHost.IsEnabledAndInWorld">
+            <summary>Use this function instead of ConditionalTrait.IsTraitDisabled.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IDockHost.IsDockingPossible(OpenRA.Actor,OpenRA.Mods.Common.Traits.IDockClient,System.Boolean)">
+            <summary>Can this <paramref name="client"/> dock at this <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/>.</summary>
+            <remarks>
+            Does not check <see cref="T:OpenRA.Mods.Common.Traits.DockType"/>.
+            Does not check if <see cref="T:OpenRA.Mods.Common.Traits.IDockClient"/> is enabled.
+            Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IDockHost.QueueMoveActivity(OpenRA.Activities.Activity,OpenRA.Actor,OpenRA.Actor,OpenRA.Mods.Common.Traits.DockClientManager)">
+            <summary>If <paramref name="client"/> is not in range of <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/> queues a child move activity and returns true. If in range returns false.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IDockHost.QueueDockActivity(OpenRA.Activities.Activity,OpenRA.Actor,OpenRA.Actor,OpenRA.Mods.Common.Traits.DockClientManager)">
+            <summary>Should be called when in range of <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/>.</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.BlockedByActor">
+            <summary>
+            When performing locomotion or pathfinding related checks,
+            determines whether the blocking rules will be applied when encountering other actors.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.BlockedByActor.None">
+            <summary>
+            Actors on the map are ignored, as if they were not present.
+            An actor can only be blocked by impassable terrain.
+            An actor can never be blocked by other actors. The blocking rules will never be evaluated.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable">
+            <summary>
+            Actors on the map that are moving, or moveable &amp; allied are ignored.
+            An actor is Immovable is any of the following applies:
+            <list type="bullet">
+            <item>Lacks the <see cref="T:OpenRA.Mods.Common.Traits.Mobile"/> trait.</item>
+            <item>The <see cref="T:OpenRA.Mods.Common.Traits.Mobile"/> trait has <see cref="P:OpenRA.Mods.Common.Traits.ConditionalTrait`1.IsTraitDisabled"/> or
+            <see cref="P:OpenRA.Mods.Common.Traits.PausableConditionalTrait`1.IsTraitPaused"/> as true.</item>
+            <item>The <see cref="T:OpenRA.Mods.Common.Traits.Mobile"/> trait has <see cref="P:OpenRA.Mods.Common.Traits.Mobile.IsImmovable"/> as true.</item>
+            </list>
+            Note the above definition means an actor can be Movable, but may not be Moving, i.e. it is Stationary.
+            Actors are allied if their owners have the <see cref="F:OpenRA.Traits.PlayerRelationship.Ally"/> relationship.
+            An actor can be blocked by impassable terrain.
+            An actor can be blocked by immovable actors *if* they are deemed as blocking by the blocking rules.
+            An actor can be blocked by an actor capable of moving, if it is not an ally and *if* they are deemed as
+            blocking by the blocking rules.
+            An actor can never be blocked by an allied actor capable of moving, even if the other actor is stationary.
+            An actor can never be blocked by a moving actor.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.BlockedByActor.Stationary">
+            <summary>
+            Actors on the map that are moving are ignored.
+            An actor is moving if both of the following apply:
+            <list type="bullet">
+            <item>It is a Moveable actor (see <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable"/>).</item>
+            <item><see cref="P:OpenRA.Mods.Common.Traits.Mobile.CurrentMovementTypes"/> contains the flag <see cref="F:OpenRA.Mods.Common.Traits.MovementType.Horizontal"/>.</item>
+            </list>
+            Otherwise the actor is deemed to be Stationary.
+            An actor can be blocked by impassable terrain.
+            An actor can be blocked by immovable actors and stationary actors *if* they are deemed as blocking by the
+            blocking rules.
+            An actor can never be blocked by a moving actor.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.BlockedByActor.All">
+            <summary>
+            Actors on the map are not ignored.
+            An actor can be blocked by impassable terrain.
+            An actor can be blocked by immovable actors, stationary actors and moving actors *if* they are deemed as
+            blocking by the blocking rules.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IPathFinder.FindPathToTargetCell(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from multiple possible sources to target.
+            Returned path is *reversed* and given target to source.
+            The shortest path between a source and the target is returned.
+            </summary>
+            <remarks>Path searches are not guaranteed to by symmetric,
+            the source and target locations cannot be swapped.
+            Call <see cref="M:OpenRA.Mods.Common.Traits.IPathFinder.FindPathToTargetCells(OpenRA.Actor,OpenRA.CPos,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)"/> instead.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IPathFinder.FindPathToTargetCells(OpenRA.Actor,OpenRA.CPos,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from source to multiple possible targets.
+            Returned path is *reversed* and given target to source.
+            The shortest path between the source and a target is returned.
+            </summary>
+            <remarks>Path searches are not guaranteed to by symmetric,
+            the source and target locations cannot be swapped.
+            Call <see cref="M:OpenRA.Mods.Common.Traits.IPathFinder.FindPathToTargetCell(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)"/> instead.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IPathFinder.FindPathToTargetCellByPredicate(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},System.Func{OpenRA.CPos,System.Boolean},OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from multiple possible sources, whilst searching for an acceptable target.
+            Returned path is *reversed* and given target to source.
+            The shortest path between a source and a discovered target is returned.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.IPathFinder.PathExistsForLocomotor(OpenRA.Mods.Common.Traits.Locomotor,OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Determines if a path exists between source and target.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            This would apply for any actor using the given <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/>.
+            </summary>
+            <remarks>Path searches are not guaranteed to by symmetric,
+            the source and target locations cannot be swapped.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.SupportPowerDecision.GetAttractiveness(OpenRA.WPos,OpenRA.Player)">
+            <summary>Evaluates the attractiveness of a position according to all considerations.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.SupportPowerDecision.GetAttractiveness(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Player)">
+            <summary>Evaluates the attractiveness of a group of actors according to all considerations.</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.SupportPowerDecision.Consideration">
+            <summary>Makes up part of a decision, describing how to evaluate a target.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.SupportPowerDecision.Consideration.GetAttractiveness(OpenRA.Actor,OpenRA.Traits.PlayerRelationship,OpenRA.Player)">
+            <summary>Evaluates a single actor according to the rules defined in this consideration.</summary>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.BotModules.Squads.Squad.Target">
+            <summary>
+            Target location to attack. This will be either the targeted actor,
+            or a position close to that actor sufficient to get within weapons range.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.BotModules.Squads.Squad.TargetActor">
+            <summary>
+            Actor that is targeted, for any actor based checks. Use <see cref="P:OpenRA.Mods.Common.Traits.BotModules.Squads.Squad.Target"/> for a targeting location.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.BotModules.Squads.Squad.IsTargetValid(OpenRA.Actor)">
+            <summary>
+            Checks the target is still valid, and updates the <see cref="P:OpenRA.Mods.Common.Traits.BotModules.Squads.Squad.Target"/> location if it is still valid.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.BotModules.Squads.GroundStateBase.Leader(OpenRA.Mods.Common.Traits.BotModules.Squads.Squad)">
+            <summary>
+            Elects a unit to lead the squad, other units in the squad will regroup to the leader if they start to spread out.
+            The leader remains the same unless a new one is forced or the leader is no longer part of the squad.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.SupportPowerBotModule.FindCoarseAttackLocationToSupportPower(OpenRA.Mods.Common.Traits.SupportPowerInstance)">
+            <summary>Scans the map in chunks, evaluating all actors in each.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.SupportPowerBotModule.FindFineAttackLocationToSupportPower(OpenRA.Mods.Common.Traits.SupportPowerInstance,OpenRA.CPos,System.Int32)">
+            <summary>Detail scans an area, evaluating positions.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.TransformsIntoDockClient.DockingPossible(OpenRA.Actor,OpenRA.Traits.TargetModifiers)">
+            <summary>Clone of <see cref="M:OpenRA.Mods.Common.Traits.DockClientManager.DockingPossible(OpenRA.Actor)"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.TransformsIntoDockClient.ForceDockingPossible(OpenRA.Actor,OpenRA.Traits.TargetModifiers)">
+            <summary>Clone of <see cref="M:OpenRA.Mods.Common.Traits.DockClientManager.DockingPossible(OpenRA.Actor,OpenRA.Traits.TargetModifiers)"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.TransformsIntoDockClient.CanDockAt(OpenRA.Actor,System.Boolean)">
+            <summary>Clone of <see cref="M:OpenRA.Mods.Common.Traits.DockClientManager.CanDockAt(OpenRA.Actor,System.Boolean,System.Boolean)"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.CaptureManager.CanTarget(OpenRA.Mods.Common.Traits.CaptureManager)">
+            <summary>Should only be called from the captor's CaptureManager.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.CaptureManager.CanTarget(OpenRA.Traits.FrozenActor)">
+            <summary>Should only be called from the captor CaptureManager.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.CaptureManager.StartCapture(OpenRA.Mods.Common.Traits.CaptureManager,OpenRA.Mods.Common.Traits.Captures@)">
+            <summary>
+            Called by CaptureActor when the activity is ready to enter and capture the target.
+            This method grants the capturing conditions on the captor and target and returns
+            true if the captor is able to start entering or false if it needs to wait.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.CaptureManager.CancelCapture(OpenRA.Mods.Common.Traits.CaptureManager)">
+            <summary>
+            Called by CaptureActor when the activity finishes or is cancelled
+            This method revokes the capturing conditions on the captor and target
+            and resets any capturing progress.
+            </summary>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.Carryall.CarryableOffset">
+            <summary>Offset between the carryall's and the carried actor's CenterPositions.</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.ConditionalTraitInfo">
+            <summary>Use as base class for *Info to subclass of ConditionalTrait. (See ConditionalTrait.)</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.ConditionalTrait`1">
+            <summary>
+            Abstract base for enabling and disabling trait using conditions.
+            Requires basing *Info on ConditionalTraitInfo and using base(info) constructor.
+            TraitEnabled will be called at creation if the trait starts enabled or does not use conditions.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.ExternalCondition.TryRevokeCondition(OpenRA.Actor,System.Object,System.Int32)">
+            <summary>Revokes the external condition with the given token if it was granted by this trait.</summary>
+            <returns><c>true</c> if the now-revoked condition was originally granted by this trait.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.GrantConditionOnDeploy.Deploy">
+            <summary>Play deploy sound and animation.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.GrantConditionOnDeploy.Undeploy">
+            <summary>Play undeploy sound and animation and after that revoke the condition.</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.PausableConditionalTraitInfo">
+            <summary>Use as base class for *Info to subclass of PausableConditionalTrait. (See PausableConditionalTrait.)</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.PausableConditionalTrait`1">
+            <summary>
+            Abstract base for enabling and disabling trait using conditions.
+            Requires basing *Info on PausableConditionalTraitInfo and using base(info) constructor.
+            TraitResumed will be called at creation if the trait starts not paused or does not have a pause condition.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.ReserveHost(OpenRA.Actor,OpenRA.Mods.Common.Traits.IDockHost)">
+            <summary>In addition returns true if reservation was succesful or we have already been reserved at <paramref name="host"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.DockingPossible(OpenRA.Primitives.BitSet{OpenRA.Mods.Common.Traits.DockType},System.Boolean)">
+            <summary>Do we have an enabled client with matching <paramref name="type"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.DockingPossible(OpenRA.Actor)">
+            <summary>Does this <paramref name="target"/> contain at least one enabled <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/> with maching <see cref="T:OpenRA.Mods.Common.Traits.DockType"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.DockingPossible(OpenRA.Actor,OpenRA.Traits.TargetModifiers)">
+            <summary>Does this <paramref name="target"/> contain at least one enabled <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/> with maching <see cref="T:OpenRA.Mods.Common.Traits.DockType"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.CanDockAt(OpenRA.Actor,OpenRA.Mods.Common.Traits.IDockHost,System.Boolean,System.Boolean)">
+            <summary>Can we dock to this <paramref name="host"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.CanDockAt(OpenRA.Actor,System.Boolean,System.Boolean)">
+            <summary>Can we dock to this <paramref name="target"/>.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.ClosestDock(OpenRA.Mods.Common.Traits.IDockHost,OpenRA.Primitives.BitSet{OpenRA.Mods.Common.Traits.DockType},System.Boolean,System.Boolean)">
+            <summary>Find the closest viable <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/>.</summary>
+            <remarks>If <paramref name="type"/> is not set, scans all clients. Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.AvailableDockHosts(OpenRA.Actor,System.Boolean,System.Boolean)">
+            <summary>Get viable <see cref="T:OpenRA.Mods.Common.Traits.IDockHost"/>'s on the <paramref name="target"/>.</summary>
+            <remarks>Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.DockClientManager.AvailableDockClients(OpenRA.Primitives.BitSet{OpenRA.Mods.Common.Traits.DockType})">
+            <summary>Get clients of matching <paramref name="type"/>.</summary>
+            <remarks>Does not check if <see cref="T:OpenRA.Mods.Common.Traits.DockClientManager"/> is enabled.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.MobileInfo.CanEnterCell(OpenRA.World,OpenRA.Actor,OpenRA.CPos,OpenRA.Traits.SubCell,OpenRA.Actor,OpenRA.Mods.Common.Traits.BlockedByActor)">
+            <summary>
+            Note: If the target <paramref name="cell"/> has any free subcell, the value of <paramref name="subCell"/> is ignored.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Traits.ScriptTagsInit">
+            <summary>Allows mappers to 'tag' actors with arbitrary strings that may have meaning in their scripts.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.ActorMapWorldExts.GetCustomMovementLayers(OpenRA.World)">
+            <summary>
+            Returns an array of custom movement layers.
+            The <see cref="P:OpenRA.Mods.Common.Traits.ICustomMovementLayer.Index"/> of a layer is used to index into this array.
+            This array may contain null entries for layers which are not present in the world.
+            This array is guaranteed to have a length of at least one. Index 0 is always null.
+            Index 0 is kept null as layer 0 is used for the ground layer, consumers can combine
+            the ground layer and custom layers into a single array for easy indexing.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.CreateMapPlayersInfo.OpenRA#Traits#ICreatePlayersInfo#CreateServerPlayers(OpenRA.MapPreview,OpenRA.Network.Session,System.Collections.Generic.List{OpenRA.GameInformation.Player},OpenRA.Support.MersenneTwister)">
+            <summary>
+            Returns a list of GameInformation.Players that matches the indexing of ICreatePlayers.CreatePlayers.
+            Non-playable players appear as null in the list.
+            </summary>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.HierarchicalPathFinderOverlay.Locomotor">
+            <summary>
+            The Locomotor selected in the UI which the overlay will display.
+            If null, will show the overlays for the currently selected units.
+            </summary>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Traits.HierarchicalPathFinderOverlay.Check">
+            <summary>
+            The blocking check selected in the UI which the overlay will display.
+            </summary>
+        </member>
+        <member name="E:OpenRA.Mods.Common.Traits.Locomotor.CellCostChanged">
+            <summary>
+            Raised when the movement cost for a cell changes, providing the old and new costs.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.Locomotor.IsBlockedBy(OpenRA.Actor,OpenRA.Actor,OpenRA.Actor,OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Mods.Common.Traits.CellFlag)">
+            <remarks>This logic is replicated in <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorIsBlocking(OpenRA.Actor)"/> and
+            <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorCellIsBlocking(OpenRA.Actor,OpenRA.CPos)"/>. If this method is updated please update those as
+            well.</remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.Locomotor.UpdateCellBlocking(OpenRA.CPos)">
+            <remarks>This logic is replicated in <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorIsBlocking(OpenRA.Actor)"/> and
+            <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorCellIsBlocking(OpenRA.Actor,OpenRA.CPos)"/>. If this method is updated please update those as
+            well.</remarks>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Traits.PathFinder.DefaultHeuristicWeightPercentage">
+            <summary>
+            When searching for paths, use a default weight of 125% to reduce
+            computation effort - even if this means paths may be sub-optimal.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.PathFinder.FindPathToTargetCell(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from multiple possible sources to target.
+            Returned path is *reversed* and given target to source.
+            The shortest path between a source and the target is returned.
+            </summary>
+            <remarks>
+            <para>
+            It is allowed for an actor to occupy an inaccessible space and move out of it if another adjacent cell is
+            accessible, but it is not allowed to move into an inaccessible target space. Therefore it is vitally
+            important to not mix up the source and target locations. A path can exist from an inaccessible source space
+            to an accessible target space, but if those parameters as swapped then no path can exist.
+            </para>
+            <para>
+            Searches that provide multiple source cells are slower than those than provide only a single source cell,
+            as optimizations are possible for the single source case. Use searches from multiple source cells
+            sparingly.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.PathFinder.FindPathToTargetCells(OpenRA.Actor,OpenRA.CPos,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from source to multiple possible targets.
+            Returned path is *reversed* and given target to source.
+            The shortest path between the source and a target is returned.
+            </summary>
+            <remarks>
+            <para>
+            It is allowed for an actor to occupy an inaccessible space and move out of it if another adjacent cell is
+            accessible, but it is not allowed to move into an inaccessible target space. Therefore it is vitally
+            important to not mix up the source and target locations. A path can exist from an inaccessible source space
+            to an accessible target space, but if those parameters as swapped then no path can exist.
+            </para>
+            <para>
+            Searches that provide multiple target cells are slower than those than provide only a single target cell,
+            as optimizations are possible for the single target case. Use searches to multiple target cells
+            sparingly.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.PathFinder.FindPathToTargetCellByPredicate(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},System.Func{OpenRA.CPos,System.Boolean},OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)">
+            <summary>
+            Calculates a path for the actor from multiple possible sources, whilst searching for an acceptable target.
+            Returned path is *reversed* and given target to source.
+            The shortest path between a source and a discovered target is returned.
+            </summary>
+            <remarks>
+            Searches with this method are slower than <see cref="M:OpenRA.Mods.Common.Traits.PathFinder.FindPathToTargetCell(OpenRA.Actor,System.Collections.Generic.IEnumerable{OpenRA.CPos},OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean)"/> due to the need to search for
+            and discover an acceptable target cell. Use this search sparingly.
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.PathFinder.PathExistsForLocomotor(OpenRA.Mods.Common.Traits.Locomotor,OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Determines if a path exists between source and target.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            This would apply for any actor using the given <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/>.
+            </summary>
+            <remarks>
+            It is allowed for an actor to occupy an inaccessible space and move out of it if another adjacent cell is
+            accessible, but it is not allowed to move into an inaccessible target space. Therefore it is vitally
+            important to not mix up the source and target locations. A path can exist from an inaccessible source space
+            to an accessible target space, but if those parameters as swapped then no path can exist.
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.ResourceClaimLayer.TryClaimCell(OpenRA.Actor,OpenRA.CPos)">
+            <summary>
+            Attempt to reserve the resource in a cell for the given actor.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.ResourceClaimLayer.CanClaimCell(OpenRA.Actor,OpenRA.CPos)">
+            <summary>
+            Returns false if the cell is already reserved by an allied actor.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Traits.ResourceClaimLayer.RemoveClaim(OpenRA.Actor)">
+            <summary>
+            Release the last resource claim made by this actor.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.ActorIndex">
+            <summary>
+            Maintains an index of actors in the world.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.ActorIndex.OwnerAndNames">
+            <summary>
+            Maintains an index of actors in the world that
+            are owned by a given <see cref="T:OpenRA.Player"/>
+            and have one of the given <see cref="F:OpenRA.ActorInfo.Name"/>.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.ActorIndex.NamesAndTrait`1">
+            <summary>
+            Maintains an index of actors in the world that
+            have one of the given <see cref="F:OpenRA.ActorInfo.Name"/>
+            and have the trait of type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.ActorIndex.OwnerAndNamesAndTrait`1">
+            <summary>
+            Maintains an index of actors in the world that
+            are owned by a given <see cref="T:OpenRA.Player"/>,
+            have one of the given <see cref="F:OpenRA.ActorInfo.Name"/>
+            and have the trait of type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.ActorInitActorReference.Actor(OpenRA.World)">
+            <summary>
+            The lazy value may reference other actors that have not been created
+            yet, so must not be resolved from the actor constructor or Created method.
+            Use a FrameEndTask or wait until it is actually needed.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.CopyPasteEditorAction.CopySelectionContents">
+            <summary>
+            TODO: This is pretty much repeated in MapEditorSelectionLogic.
+            </summary>
+            <returns>Clipboard containing map contents for this region.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.ColorMixerWidget.Set(OpenRA.Primitives.Color)">
+            <summary>
+            Set the color picker to nearest valid color to the given value.
+            The saturation and brightness may be adjusted.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.Logic.LobbyUtils.SplitOnFirstToken(System.String,System.String)">
+            <summary>Splits a string into two parts on the first instance of a given token.</summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Widgets.CommandBarLogic">
+            <summary>Contains all functions that are unit-specific.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.VideoPlayerWidget.LoadAndPlay(System.String)">
+            <summary>
+            Tries to load a video from the specified file and play it. Does nothing if the file name matches the already loaded video.
+            </summary>
+            <param name="filename">Name of the file, including the extension.</param>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.VideoPlayerWidget.LoadAndPlayAsync(System.String,System.Action)">
+            <summary>
+            Tries to load a video from the specified file and play it. Does nothing if the file name matches the already loaded video.
+            </summary>
+            <param name="filename">Name of the file, including the extension.</param>
+            <param name="after">Action to perform after the video ends.</param>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.VideoPlayerWidget.Play(OpenRA.Video.IVideo)">
+            <summary>
+            Plays the given <see cref="T:OpenRA.Video.IVideo"/>.
+            </summary>
+            <param name="video">An <see cref="T:OpenRA.Video.IVideo"/> instance.</param>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Widgets.WidgetUtils.DrawPanel(OpenRA.Primitives.Rectangle,OpenRA.Graphics.Sprite[])">
+            <summary>
+            Fill a rectangle with sprites defining a panel layout.
+            Draw order is center, borders, corners to allow mods to define fancy border and corner overlays.
+            </summary>
+            <param name="bounds">Rectangle to fill.</param>
+            <param name="sprites">Nine sprites defining the panel: TL, T, TR, L, C, R, BL, B, BR.</param>
+        </member>
+        <member name="M:OpenRA.Mods.Common.FileFormats.Blast.Decompress(System.IO.Stream,System.IO.Stream,System.Action{System.Int64,System.Int64})">
+            <summary>PKWare Compression Library stream.</summary>
+            <param name="input">Compressed input stream.</param>
+            <param name="output">Stream to write the decompressed output.</param>
+            <param name="onProgress">Progress callback, invoked with (read bytes, written bytes).</param>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Graphics.EditorSelectionAnnotationRenderable">
+            <summary>
+            Render the current editor area selection or paste region.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Orders.UnitOrderGenerator.OrderForUnit(OpenRA.Actor,OpenRA.Traits.Target,OpenRA.CPos,OpenRA.MouseInput)">
+            <summary>
+            Returns the most appropriate order for a given actor and target.
+            First priority is given to orders that interact with the given actors.
+            Second priority is given to actors in the given cell.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.CellStatus">
+            <summary>
+            Describes the three states that a node in the graph can have.
+            Based on A* algorithm specification.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.CellInfo">
+            <summary>
+            Stores information about nodes in the pathfinding graph.
+            The default value of this struct represents an <see cref="F:OpenRA.Mods.Common.Pathfinder.CellStatus.Unvisited"/> location.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.CellInfo.Status">
+            <summary>
+            The status of this node. Accessing other fields is only valid when the status is not <see cref="F:OpenRA.Mods.Common.Pathfinder.CellStatus.Unvisited"/>.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.CellInfo.CostSoFar">
+            <summary>
+            The cost to move from the start up to this node.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.CellInfo.EstimatedTotalCost">
+            <summary>
+            The estimation of how far this node is from our target.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.CellInfo.PreviousNode">
+            <summary>
+            The previous node of this one that follows the shortest path.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.DensePathGraph">
+            <summary>
+            A dense pathfinding graph that implements the ability to cost and get connections for cells,
+            and supports <see cref="T:OpenRA.Mods.Common.Traits.ICustomMovementLayer"/>. Allows searching over a dense grid of cells.
+            Derived classes are required to provide backing storage for the pathfinding information.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.DensePathGraph.IsValidNeighbor(OpenRA.CPos)">
+            <summary>
+            Determines if a candidate neighbouring position is
+            allowable to be returned in a <see cref="T:OpenRA.Mods.Common.Pathfinder.GraphConnection"/>.
+            </summary>
+            <param name="neighbor">The candidate cell. This might not lie within map bounds.</param>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.Grid">
+            <summary>
+            Represents a simplistic grid of cells, where everything in the
+            top-to-bottom and left-to-right range is within the grid.
+            The grid can be restricted to a single layer, or allowed to span all layers.
+            </summary>
+            <remarks>
+            This means in <see cref="F:OpenRA.MapGridType.RectangularIsometric"/> some cells within a grid may lay off the map.
+            Contrast this with <see cref="T:OpenRA.CellRegion"/> which maintains the simplistic grid in map space -
+            ensuring the cells are therefore always within the map area.
+            The advantage of Grid is that it has straight edges, making logic for adjacent grids easy.
+            A CellRegion has jagged edges in RectangularIsometric, which makes that more difficult.
+            </remarks>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.Grid.TopLeft">
+            <summary>
+            Inclusive.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.Grid.BottomRight">
+            <summary>
+            Exclusive.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.Grid.SingleLayer">
+            <summary>
+            When true, the grid spans only the single layer given by the cells. When false, it spans all layers.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.Grid.Contains(OpenRA.CPos)">
+            <summary>
+            Checks if the cell X and Y lie within the grid bounds. The cell layer must also match.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.Grid.IntersectsLine(OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Checks if the line segment from <paramref name="start"/> to <paramref name="end"/>
+            passes through the grid boundary. The cell layers are ignored.
+            A line contained wholly within the grid that doesn't cross the boundary is not counted as intersecting.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.GridPathGraph">
+            <summary>
+            A dense pathfinding graph that supports a search over all cells within a <see cref="T:OpenRA.Mods.Common.Pathfinder.Grid"/>.
+            Cells outside the grid area are deemed unreachable and will not be considered.
+            It implements the ability to cost and get connections for cells, and supports <see cref="T:OpenRA.Mods.Common.Traits.ICustomMovementLayer"/>.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder">
+             <summary>
+             Provides pathfinding abilities for actors that use a specific <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/>.
+             Maintains a hierarchy of abstract graphs that provide a more accurate heuristic function during
+             A* pathfinding than the one available from <see cref="M:OpenRA.Mods.Common.Pathfinder.PathSearch.DefaultCostEstimator(OpenRA.Mods.Common.Traits.Locomotor)"/>.
+             This allows for faster pathfinding.
+             </summary>
+             <remarks>
+             <para>The goal of this pathfinder is to increase performance of path searches. <see cref="T:OpenRA.Mods.Common.Pathfinder.PathSearch"/> is used
+             to perform a path search as usual, but a different heuristic function is provided that is more accurate. This
+             means fewer nodes have to be explored during the search, resulting in a performance increase.</para>
+            
+             <para>When an A* path search is performed, the search expands outwards from the source location until the
+             target is found. The heuristic controls how this expansion occurs. When the heuristic of h(n) = 0 is given, we
+             get Dijkstra's algorithm. The search grows outwards from the source node in an expanding circle with no sense
+             of direction. This will find the shortest path by brute force. It will explore many nodes during the search,
+             including lots of nodes in the opposite direction to the target.</para>
+            
+             <para><see cref="M:OpenRA.Mods.Common.Pathfinder.PathSearch.DefaultCostEstimator(OpenRA.Mods.Common.Traits.Locomotor)"/> provides heuristic for searching a 2D grid. It
+             estimates the cost as the straight-line distance between the source and target nodes. The search grows in a
+             straight line towards the target node. This is a vast improvement over Dijkstra's algorithm as we now
+             prioritize exploring nodes that lie closer to the target, rather than exploring nodes that take us away from
+             the target.</para>
+            
+             <para>This default straight-line heuristic still has drawbacks - it is unaware of the obstacles on the grid. If
+             the route to be found requires steering around obstacles then this heuristic can perform badly. Imagine a path
+             that must steer around a lake, or move back on itself to get out of a dead end. In these cases the straight-line
+             heuristic moves blindly towards the target, when actually the path requires that we move sidewards or even
+             backwards to find a route. When this occurs then the straight-line heuristic ends up exploring nodes that
+             aren't useful - they lead us into dead ends or directly into an obstacle that we need to go around instead.
+             </para>
+            
+             <para>The <see cref="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder"/> improves the heuristic by making it aware of unreachable map
+             terrain. A "low-resolution" version of the map is maintained, and used to provide an initial route. When the
+             search is conducted it explores along this initial route. This allows the search to "know" it needs to go
+             sideways around the lake or backwards out of the dead-end, meaning we can explore even fewer nodes.</para>
+            
+             <para>The "low-resolution" version of the map is referred to as the abstract graph. The abstract graph is
+             created by dividing the map up into a series of grids, of say 10x10 nodes. Within each grid, we determine the
+             connected regions of nodes within that grid. If all the nodes within the grid connect to each other, we have
+             one such region. If they are split up by impassable terrain then we may have two or more regions within the
+             grid. Every region will be represented by one node in the abstract graph (an abstract node, for short).</para>
+            
+             <para>When a path search is to be performed, we first perform a A* search on the abstract graph with the
+             <see cref="M:OpenRA.Mods.Common.Pathfinder.PathSearch.DefaultCostEstimator(OpenRA.Mods.Common.Traits.Locomotor)"/>. This graph is much smaller than the full map, so
+             this search is quick. The resulting path gives us the initial route between each abstract node. We can then use
+             this to create the improved heuristic for use on the path search on the full resolution map. When determining
+             the cost for the node, we can use the straight-line distance towards the next abstract node as our estimate.
+             Our search is therefore guided along the initial route.</para>
+            
+             <para>This implementation only maintains one level of abstract graph, but a hierarchy of such graphs is
+             possible. This allows the top-level and lowest resolution graph to be as small as possible - important because
+             it will be searched using the dumbest heuristic. Each level underneath is higher-resolution and contains more
+             nodes, but uses a heuristic informed from the previous level to guide the search in the right direction.</para>
+            
+             <para>This implementation is aware of movement costs over terrain given by
+             <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.MovementCostToEnterCell(OpenRA.Actor,OpenRA.CPos,OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Actor,System.Boolean)"/>. It is aware of
+             changes to the costs in terrain and able to update the abstract graph when this occurs. It is able to search
+             the abstract graph as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> had been specified. If
+             <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable"/> is given in the constructor, the abstract graph will additionally
+             account for a subset of immovable actors using the same rules as
+             <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.CanMoveFreelyInto(OpenRA.Actor,OpenRA.CPos,OpenRA.Traits.SubCell,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Actor,System.Boolean)"/>. It will be aware
+             of changes to actors on the map and update the abstract graph when this occurs. Other types of blocking actors
+             will not be accounted for in the heuristic.</para>
+            
+             <para>If the obstacle on the map is from terrain (e.g. a cliff or lake) the heuristic will work well. If the
+             obstacle is from the subset of immovable actors (e.g. trees, walls, buildings) and
+             <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable"/> was given, the heuristic will work well. If the obstacle is from other
+             actors (e.g. units) then the heuristic is unaware of these. Therefore the same problem where the search goes in
+             the wrong direction is possible, e.g. through a choke-point that has units blocking it. In this scenario the
+             performance benefit will be lost, as the search will have to explore more nodes until it can get around the
+             obstacle.</para>
+            
+             <para>In summary, the <see cref="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder"/> reduces the performance impact of path searches that
+             must go around terrain, and some types of actor, but does not improve performance of searches that must go
+             around the remaining types of actor.</para>
+             </remarks>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.gridInfos">
+            <summary>
+            Index by a <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.GridIndex(OpenRA.CPos)"/>.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.abstractGraph">
+            <summary>
+            The abstract graph is represented here.
+            An abstract node is the key, and costs to other abstract nodes are then available.
+            Abstract nodes with no connections are NOT present in the graph.
+            A lookup will fail, rather than return an empty list.
+            </summary>
+        </member>
+        <member name="F:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.abstractDomains">
+            <summary>
+            The abstract domains are represented here.
+            An abstract node is the key, and a domain index is given.
+            If the domain index of two nodes is equal, a path exists between them (ignoring all blocking actors).
+            If unequal, no path is possible.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.GridInfo">
+            <summary>
+            Knows about the abstract nodes within a grid. Can map a local cell to its abstract node.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.GridInfo.AbstractCellForLocalCell(OpenRA.CPos,OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder)">
+            <summary>
+            Maps a local cell to a abstract node in the graph.
+            Returns null when the local cell is unreachable.
+            Pass a null <paramref name="hpf"/> to skip cost checks if the caller already checked.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.AbstractGraphWithInsertedEdges">
+            <summary>
+            Represents an abstract graph with some extra edges inserted.
+            Instead of building a new dictionary with the edges added, we build a supplemental dictionary of changes.
+            This is to avoid copying the entire abstract graph.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.BuildGrids">
+            <summary>
+            Divides the map area up into a series of grids.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.BuildGrid(System.Int32,System.Int32,OpenRA.Mods.Common.Traits.ICustomMovementLayer[])">
+            <summary>
+            Determines the abstract nodes within a single grid. One abstract node will be created for each set of cells
+            that are reachable from each other within the grid area. A grid with open terrain will commonly have one
+            abstract node. If impassable terrain such as cliffs or water divides the cells into 2 or more distinct
+            regions, one abstract node is created for each region. We also remember which cells belong to which
+            abstract node. Given a local cell, this allows us to determine which abstract node it belongs to.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.BuildCostTable">
+            <summary>
+            Builds the abstract graph in entirety. The abstract graph contains edges between all the abstract nodes
+            that represent the costs to move between them.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.GetAbstractEdgesForGrid(System.Int32,System.Int32,OpenRA.Mods.Common.Traits.ICustomMovementLayer[])">
+            <summary>
+            For a given grid, determines the edges between the abstract nodes within the grid and the abstract nodes
+            within adjacent grids on the same layer. Also determines any edges available to grids on other layers via
+            custom movement layers.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RequireCostRefreshInCell(OpenRA.CPos,System.Int16,System.Int16)">
+            <summary>
+            When reachability changes for a cell, marks the grid it belongs to as out of date.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RequireBlockingRefreshInCell(OpenRA.CPos)">
+            <summary>
+            When actors change for a cell, marks the grid it belongs to as out of date.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RequireProjectionRefreshInCell(OpenRA.CPos)">
+            <summary>
+            When map projection changes for a cell, marks the grid it belongs to as out of date.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorIsBlocking(OpenRA.Actor)">
+            <summary>
+            <para>
+            <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable"/> defines immovability based on the mobile trait. The blocking rules
+            in <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.CanMoveFreelyInto(OpenRA.Actor,OpenRA.CPos,OpenRA.Traits.SubCell,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Actor,System.Boolean)"/> allow units
+            to pass these immovable actors if they are temporary blockers (e.g. gates) or crushable by the locomotor.
+            Since our abstract graph must work for any actor, we have to be conservative and can only consider a subset
+            of the immovable actors in the graph - ones we know cannot be passed by some actors due to these rules.
+            Both this and <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorCellIsBlocking(OpenRA.Actor,OpenRA.CPos)"/> must be true for a cell to be blocked.
+            </para>
+            <para>
+            This method is dependant on the logic in
+            <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.CanMoveFreelyInto(OpenRA.Actor,OpenRA.CPos,OpenRA.Traits.SubCell,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Actor,System.Boolean)"/> and
+            <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.UpdateCellBlocking(OpenRA.CPos)"/>. This method must be kept in sync with changes in the locomotor
+            rules.
+            </para>
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorCellIsBlocking(OpenRA.Actor,OpenRA.CPos)">
+            <summary>
+            The blocking rules additionally allow some cells to be considered passable even if the actor is blocking.
+            A cell is passable if the locomotor can share the cell and a subcell is available. It is also passable if
+            it is a transit only cell of a <see cref="T:OpenRA.Mods.Common.Traits.Building"/>. We cannot consider these cells to be blocked.
+            Both this and <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.ActorIsBlocking(OpenRA.Actor)"/> must be true for a cell to be blocked.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.FindPath(OpenRA.Actor,System.Collections.Generic.IReadOnlyCollection{OpenRA.CPos},OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Int32,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean,OpenRA.Mods.Common.Traits.PathFinderOverlay)">
+            <summary>
+            Calculates a path for the actor from multiple possible sources to target, using a unidirectional search.
+            Returned path is *reversed* and given target to source.
+            The actor must use the same <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/> as this <see cref="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.FindPath(OpenRA.Actor,OpenRA.CPos,OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,System.Int32,System.Func{OpenRA.CPos,System.Int32},OpenRA.Actor,System.Boolean,OpenRA.Mods.Common.Traits.PathFinderOverlay)">
+            <summary>
+            Calculates a path for the actor from source to target, using a bidirectional search.
+            Returned path is *reversed* and given target to source.
+            The actor must use the same <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/> as this <see cref="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.PathExists(OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Determines if a path exists between source and target.
+            When <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given, only terrain is taken into account,
+            i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was used when finding a path.
+            When <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.Immovable"/> was given, a subset of immovable actors are also taken into
+            account. If the method returns false, there is definitely no path. If it returns true there could be a
+            path, but it is possible that there is no path because of an immovable actor that does not belong to the
+            subset of actors that can be accounted for. So be careful.
+            This would apply for any actor using the same <see cref="T:OpenRA.Mods.Common.Traits.Locomotor"/> as this <see cref="T:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RebuildDirtyGrids">
+            <summary>
+            The abstract graph can become out of date when reachability costs for terrain change.
+            When this occurs, we must rebuild any affected parts of the abstract graph so it remains correct.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RebuildCostTable(System.Int32,System.Int32,OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.GridInfo,OpenRA.Mods.Common.Traits.ICustomMovementLayer[])">
+            <summary>
+            Updates the abstract graph to account for changes in a specific grid. Any nodes and edges related to that
+            grid will be removed, new nodes and edges will be determined and then inserted into the graph.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.RebuildDomains">
+            <summary>
+            The abstract domains can become out of date when the abstract graph changes.
+            When this occurs, we must rebuild the domain cache.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.AbstractCellForLocalCell(OpenRA.CPos)">
+            <summary>
+            Maps a local cell to a abstract node in the graph. Returns null when the local cell is unreachable.
+            The cell must have been checked to be on the map with <see cref="M:OpenRA.Map.Contains(OpenRA.CPos)"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.AbstractCellForLocalCellNoAccessibleCheck(OpenRA.CPos)">
+            <summary>
+            Maps a local cell to a abstract node in the graph. Returns null when the local cell is unreachable.
+            Skips the <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.CellIsAccessible(OpenRA.CPos)"/> check, if it has already been performed.
+            If an accessible check has not been performed, call <see cref="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.AbstractCellForLocalCell(OpenRA.CPos)"/> instead.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.EdgeFromLocalToAbstract(OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Creates a <see cref="T:OpenRA.Mods.Common.Pathfinder.GraphEdge"/> from the <paramref name="localCell"/> to the <paramref name="abstractCell"/>.
+            Return null when no edge is required, because the cells match.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.Heuristic(OpenRA.Mods.Common.Pathfinder.PathSearch,System.Int32,System.Collections.Generic.HashSet{OpenRA.CPos},System.Collections.Generic.List{OpenRA.CPos})">
+            <summary>
+            Uses the provided abstract search to provide an estimate of the distance remaining to the target
+            (the heuristic) for a local path search. The abstract search must run in the opposite direction to the
+            local search. So when searching from source to target, the abstract search must be from target to source.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.HierarchicalPathFinder.AbstractNodeForCost(OpenRA.Mods.Common.Pathfinder.SparsePathGraph,OpenRA.CPos,OpenRA.CPos)">
+            <summary>
+            Determines an abstract node further along the path which can be reached directly without deviating from the
+            abstract path from the abstract cell of the source location.
+            As this node can be reached directly we can target it instead
+            of the original node to provide a better cost estimate.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.IPathGraph">
+            <summary>
+            Represents a pathfinding graph with nodes and edges.
+            Nodes are represented as cells, and pathfinding information
+            in the form of <see cref="T:OpenRA.Mods.Common.Pathfinder.CellInfo"/> is attached to each one.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.IPathGraph.GetConnections(OpenRA.CPos,System.Func{OpenRA.CPos,System.Boolean})">
+            <summary>
+            Given a source node, returns connections to all reachable destination nodes with their cost.
+            </summary>
+            <remarks>PERF: Returns a <see cref="T:System.Collections.Generic.List`1"/> rather than an <see cref="T:System.Collections.Generic.IEnumerable`1"/> as enumerating
+            this efficiently is important for pathfinding performance. Callers should interact with this as an
+            <see cref="T:System.Collections.Generic.IEnumerable`1"/> and not mutate the result.</remarks>
+        </member>
+        <member name="P:OpenRA.Mods.Common.Pathfinder.IPathGraph.Item(OpenRA.CPos)">
+            <summary>
+            Gets or sets the pathfinding information for a given node.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.GraphEdge">
+            <summary>
+            Represents a full edge in a graph, giving the cost to traverse between two nodes.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.GraphConnection">
+            <summary>
+            Represents part of an edge in a graph, giving the cost to traverse to a node.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.MapPathGraph">
+            <summary>
+            A dense pathfinding graph that supports a search over all cells within a map.
+            It implements the ability to cost and get connections for cells, and supports <see cref="T:OpenRA.Mods.Common.Traits.ICustomMovementLayer"/>.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.CellAllowsMovement(OpenRA.World,OpenRA.Mods.Common.Traits.Locomotor,OpenRA.CPos,System.Func{OpenRA.CPos,System.Int32})">
+            <summary>
+            Determines if a cell is a valid pathfinding location.
+            <list type="bullet">
+            <item>It is in the world.</item>
+            <item>It is either on the ground layer (0) or on an *enabled* custom movement layer.</item>
+            <item>It has not been excluded by the <paramref name="customCost"/>.</item>
+            </list>
+            If required, follow this with a call to
+            <see cref="M:OpenRA.Mods.Common.Traits.Locomotor.MovementCostToEnterCell(OpenRA.Actor,OpenRA.CPos,OpenRA.CPos,OpenRA.Mods.Common.Traits.BlockedByActor,OpenRA.Actor,System.Boolean)"/> to
+            determine if the cell is accessible.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.DefaultCostEstimator(OpenRA.Mods.Common.Traits.Locomotor,OpenRA.CPos)">
+            <summary>
+            Default: Diagonal distance heuristic. More information:
+            http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+            Layers are ignored and incur no additional cost.
+            </summary>
+            <param name="locomotor">Locomotor used to provide terrain costs.</param>
+            <param name="destination">The cell for which costs are to be given by the estimation function.</param>
+            <returns>A delegate that calculates the cost estimation between the <paramref name="destination"/> and the given cell.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.DefaultCostEstimator(OpenRA.Mods.Common.Traits.Locomotor)">
+            <summary>
+            Default: Diagonal distance heuristic. More information:
+            http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+            Layers are ignored and incur no additional cost.
+            </summary>
+            <param name="locomotor">Locomotor used to provide terrain costs.</param>
+            <returns>A delegate that calculates the cost estimation between the given cells.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.#ctor(OpenRA.Mods.Common.Pathfinder.IPathGraph,System.Func{OpenRA.CPos,System.Boolean,System.Int32},System.Int32,System.Func{OpenRA.CPos,System.Boolean},OpenRA.Mods.Common.Pathfinder.PathSearch.IRecorder)">
+            <summary>
+            Initialize a new search.
+            </summary>
+            <param name="graph">Graph over which the search is conducted.</param>
+            <param name="heuristic">Provides an estimation of the distance between the given cell and the target.
+            The Boolean parameter indicates if the cell is known to be accessible.
+            When true, it is known accessible as it is being explored by the search.
+            When false, the cell is being considered as a starting location and might not be accessible.</param>
+            <param name="heuristicWeightPercentage">
+            The search will aim for the shortest path when given a weight of 100%.
+            We can allow the search to find paths that aren't optimal by changing the weight.
+            The weight limits the worst case length of the path,
+            e.g. a weight of 110% will find a path no more than 10% longer than the shortest possible.
+            The benefit of allowing the search to return suboptimal paths is faster computation time.
+            The search can skip some areas of the search space, meaning it has less work to do.
+            </param>
+            <param name="targetPredicate">Determines if the given cell is the target.</param>
+            <param name="recorder">If provided, will record all nodes explored by searches performed.</param>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.CanExpand">
+            <summary>
+            Determines if there are more reachable cells and the search can be continued.
+            If false, <see cref="M:OpenRA.Mods.Common.Pathfinder.PathSearch.Expand"/> can no longer be called.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.Expand">
+            <summary>
+            This function analyzes the neighbors of the most promising node in the pathfinding graph
+            using the A* algorithm (A-star) and returns that node.
+            </summary>
+            <returns>The most promising node of the iteration.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.ExpandToTarget">
+            <summary>
+            Expands the path search until a path is found, and returns whether a path is found successfully.
+            </summary>
+            <remarks>
+            If the path search has previously been expanded it will only return true if a path can be found during
+            *this* expansion of the search. If the search was expanded previously and the target is already
+            <see cref="F:OpenRA.Mods.Common.Pathfinder.CellStatus.Closed"/> then this method will return false.
+            </remarks>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.ExpandAll">
+            <summary>
+            Expands the path search over the whole search space.
+            Returns the cells that were visited during the search.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.FindPath">
+            <summary>
+            Expands the path search until a path is found, and returns that path.
+            Returned path is *reversed* and given target to source.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Pathfinder.PathSearch.FindBidiPath(OpenRA.Mods.Common.Pathfinder.PathSearch,OpenRA.Mods.Common.Pathfinder.PathSearch)">
+            <summary>
+            Expands both path searches until they intersect, and returns the path.
+            Returned path is from the source of the first search to the source of the second search.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.Pathfinder.SparsePathGraph">
+            <summary>
+            A sparse pathfinding graph that supports a search over provided cells.
+            This is a classic graph that supports an arbitrary graph of nodes and edges,
+            and does not require a dense grid of cells.
+            Costs and any desired connections to a <see cref="T:OpenRA.Mods.Common.Traits.ICustomMovementLayer"/>
+            must be provided as input.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.TargetExtensions.RecalculateInvalidatingHiddenTargets(OpenRA.Traits.Target,OpenRA.Player)">
+            <summary>
+            Update (Frozen)Actor targets to account for visibility changes or actor replacement.
+            If the target actor becomes hidden without a FrozenActor, the target is invalidated.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.TargetExtensions.Recalculate(OpenRA.Traits.Target,OpenRA.Player,System.Boolean@)">
+            <summary>
+            Update (Frozen)Actor targets to account for visibility changes or actor replacement.
+            If the target actor becomes hidden without a FrozenActor, the target actor is kept
+            and the actorHidden flag is set to true.
+            </summary>
+        </member>
+        <member name="T:OpenRA.Mods.Common.UpdateRules.UpdateRule.TopLevelNodeTransform">
+            <summary>Defines a transformation that is run on each top-level node in a yaml file set.</summary>
+            <returns>An enumerable of manual steps to be run by the user.</returns>
+        </member>
+        <member name="T:OpenRA.Mods.Common.UpdateRules.UpdateRule.ChromeNodeTransform">
+            <summary>Defines a transformation that is run on each widget node in a chrome yaml file set.</summary>
+            <returns>An enumerable of manual steps to be run by the user.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateUtils.LoadModYaml(OpenRA.ModData,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Loads a YamlFileSet from a list of mod files.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateUtils.LoadExternalMapYaml(OpenRA.ModData,OpenRA.MiniYamlBuilder,System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Loads a YamlFileSet containing any external yaml definitions referenced by a map yaml block.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateUtils.LoadInternalMapYaml(OpenRA.ModData,OpenRA.FileSystem.IReadWritePackage,OpenRA.MiniYamlBuilder,System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Loads a YamlFileSet containing any internal definitions yaml referenced by a map yaml block.
+            External references or internal references to missing files are ignored.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateUtils.UpdateMap(OpenRA.ModData,OpenRA.FileSystem.IReadWritePackage,OpenRA.Mods.Common.UpdateRules.UpdateRule,System.Collections.Generic.List{System.ValueTuple{OpenRA.FileSystem.IReadWritePackage,System.String,System.Collections.Generic.List{OpenRA.MiniYamlNodeBuilder}}}@,System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Run a given update rule on a map.
+            The rule is only applied to internal files - external includes are assumed to be handled separately
+            but are noted in the externalFilenames list for informational purposes.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.IsRemoval(OpenRA.MiniYamlNodeBuilder)">
+            <summary>Checks if node is a removal (has '-' prefix).</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.RenameKey(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Renames a yaml key preserving any @suffix.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.RemoveNodes(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Removes children with keys equal to [match] or [match]@[arbitrary suffix].</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.KeyMatches(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Returns true if the node is of the form [match] or [match]@[arbitrary suffix].</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.KeyContains(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Returns true if the node is of the form [match], [match]@[arbitrary suffix] or [arbitrary suffix]@[match].</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.ChildrenMatching(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Returns children with keys equal to [match] or [match]@[arbitrary suffix].</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UpdateRules.UpdateExtensions.ChildrenContaining(OpenRA.MiniYamlNodeBuilder,System.String,System.Boolean,System.Boolean)">
+            <summary>Returns children whose keys contain 'match' (optionally in the suffix).</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.TickFacing(OpenRA.WAngle,OpenRA.WAngle,OpenRA.WAngle)">
+            <summary>
+            Adds step angle units to facing in the direction that takes it closer to desiredFacing.
+            If facing is already within step of desiredFacing then desiredFacing is returned.
+            Step is given as an integer to allow negative values (step away from the desired facing).
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.GetTurnDirection(OpenRA.WAngle,OpenRA.WAngle)">
+            <summary>
+            Determines whether desiredFacing is clockwise (-1) or anticlockwise (+1) of facing.
+            If desiredFacing is equal to facing or directly behind facing we treat it as being anticlockwise.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.IndexFacing(OpenRA.WAngle,System.Int32)">
+            <summary>
+            Calculate the frame index (between 0..numFrames) that
+            should be used for the given facing value.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.AngleDiffToStep(OpenRA.WAngle,System.Int32)">
+            <summary>
+            Returns the remainder angle after rounding to the nearest whole step / facing.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.GetInterpolatedFacingRotation(OpenRA.WAngle,System.Int32,System.Int32)">
+            <summary>Returns the angle that the closest facing sprite should be rotated by to achieve the closest interpolated facing.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.QuantizeFacing(OpenRA.WAngle,System.Int32)">
+            <summary>Rounds the given facing value to the nearest quantized facing.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Util.NormalizeFacing(System.Int32)">
+            <summary>Wraps an arbitrary integer facing value into the range 0 - 255.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.UtilityCommands.ExtractChromeStringsCommand.FindUntranslatedStringFields(OpenRA.ModData)">
+            <summary>This is a helper method to find untranslated strings in chrome layouts.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Warheads.CreateEffectWarhead.ActorTypeAtImpact(OpenRA.World,OpenRA.WPos,OpenRA.Actor)">
+            <summary>Checks if there are any actors at impact position and if the warhead is valid against any of them.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Warheads.CreateEffectWarhead.IsValidAgainstTerrain(OpenRA.World,OpenRA.WPos)">
+            <summary>Checks if the warhead is valid against the terrain at impact position.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Warheads.Warhead.DoImpact(OpenRA.Traits.Target@,OpenRA.GameRules.WarheadArgs)">
+            <summary>Applies the warhead's effect against the target.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Warheads.Warhead.IsValidAgainst(OpenRA.Actor,OpenRA.Actor)">
+            <summary>Checks if the warhead is valid against (can do something to) the actor.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.Warheads.Warhead.IsValidAgainst(OpenRA.Traits.FrozenActor,OpenRA.Actor)">
+            <summary>Checks if the warhead is valid against (can do something to) the frozen actor.</summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.WithPathFrom(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Actor,System.Func{OpenRA.Actor,OpenRA.WVec[]})">
+            <summary>
+            Filters <paramref name="actors"/> by only returning those that can be reached as the target of a path from
+            <paramref name="sourceActor"/>. Only terrain is taken into account, i.e. as if
+            <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            <paramref name="targetOffsets"/> is used to define locations around each actor in <paramref name="actors"/>
+            of which one must be reachable.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.WithPathFrom(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Actor)">
+            <summary>
+            Filters <paramref name="actors"/> by only returning those that can be reached as the target of a path from
+            <paramref name="sourceActor"/>. Only terrain is taken into account, i.e. as if
+            <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.ClosestToWithPathFrom(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Actor,System.Func{OpenRA.Actor,OpenRA.WVec[]})">
+            <summary>
+            Of <paramref name="actors"/> that can be reached as the target of a path from
+            <paramref name="sourceActor"/>, returns the nearest by comparing their <see cref="P:OpenRA.Actor.CenterPosition"/>.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            <paramref name="targetOffsets"/> is used to define locations around each actor in <paramref name="actors"/>
+            of which one must be reachable.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.ClosestToWithPathFrom(System.Collections.Generic.IEnumerable{OpenRA.WPos},OpenRA.Actor)">
+            <summary>
+            Of <paramref name="positions"/> that can be reached as the target of a path from
+            <paramref name="sourceActor"/>, returns the nearest by comparing the <see cref="P:OpenRA.Actor.CenterPosition"/>.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.WithPathTo(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.World,OpenRA.WPos)">
+            <summary>
+            Filters <paramref name="actors"/> by only returning those where the <paramref name="targetPosition"/> can
+            be reached as the target of a path from the actor. Only terrain is taken into account, i.e. as if
+            <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.WithPathToAny(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.World,System.Func{OpenRA.Actor,OpenRA.WPos[]})">
+            <summary>
+            Filters <paramref name="actors"/> by only returning those where any of the
+            <paramref name="targetPositions"/> can be reached as the target of a path from the actor.
+            Returns the reachable target positions for each actor.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.WithPathTo(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Actor)">
+            <summary>
+            Filters <paramref name="actors"/> by only returning those where the <paramref name="targetActor"/> can be
+            reached as the target of a path from the actor. Only terrain is taken into account, i.e. as if
+            <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.ClosestToWithPathTo(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.World,OpenRA.WPos)">
+            <summary>
+            Of <paramref name="actors"/> where the <paramref name="targetPosition"/> can be reached as the target of a
+            path from the actor, returns the nearest by comparing the <see cref="P:OpenRA.Actor.CenterPosition"/>.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.ClosestToWithPathToAny(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.World,System.Func{OpenRA.Actor,OpenRA.WPos[]})">
+            <summary>
+            Of <paramref name="actors"/> where any of the <paramref name="targetPositions"/> can be reached as the
+            target of a path from the actor, returns the nearest by comparing the <see cref="P:OpenRA.Actor.CenterPosition"/>.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.ClosestToWithPathTo(System.Collections.Generic.IEnumerable{OpenRA.Actor},OpenRA.Actor)">
+            <summary>
+            Of <paramref name="actors"/> where the <paramref name="targetActor"/> can be reached as the target of a
+            path from the actor, returns the nearest by comparing their <see cref="P:OpenRA.Actor.CenterPosition"/>.
+            Only terrain is taken into account, i.e. as if <see cref="F:OpenRA.Mods.Common.Traits.BlockedByActor.None"/> was given.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.FindActorsOnLine(OpenRA.World,OpenRA.WPos,OpenRA.WPos,OpenRA.WDist,System.Boolean)">
+            <summary>
+            Finds all the actors of which their health radius is intersected by a line (with a definable width) between two points.
+            </summary>
+            <param name="world">The engine world the line intersection is to be done in.</param>
+            <param name="lineStart">The position the line should start at.</param>
+            <param name="lineEnd">The position the line should end at.</param>
+            <param name="lineWidth">How close an actor's health radius needs to be to the line to be considered 'intersected' by the line.</param>
+            <param name="onlyBlockers">If set, only considers the size of actors that have an <see cref="T:OpenRA.Mods.Common.Traits.IBlocksProjectiles"/>
+            trait which may improve search performance. However does NOT filter the returned actors on this trait.</param>
+            <returns>A list of all the actors intersected by the line.</returns>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.FindActorsOnCircle(OpenRA.World,OpenRA.WPos,OpenRA.WDist)">
+            <summary>
+            Finds all the actors of which their health radius might be intersected by a specified circle.
+            </summary>
+        </member>
+        <member name="M:OpenRA.Mods.Common.WorldExtensions.MinimumPointLineProjection(OpenRA.WPos,OpenRA.WPos,OpenRA.WPos)">
+            <summary>
+            Find the point (D) on a line (A-B) that is closest to the target point (C).
+            </summary>
+            <param name="lineStart">The source point (tail) of the line.</param>
+            <param name="lineEnd">The target point (head) of the line.</param>
+            <param name="point">The target point that the minimum distance should be found to.</param>
+            <returns>The WPos that is the point on the line that is closest to the target point.</returns>
+        </member>
+    </members>
+</doc>

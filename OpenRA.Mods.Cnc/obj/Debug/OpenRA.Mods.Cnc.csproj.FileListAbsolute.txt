@@ -1,0 +1,15 @@
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Cnc.deps.json
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Cnc.dll
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Cnc.pdb
+F:\work\volmiTestProject\test-task-openra\bin\OpenRA.Mods.Cnc.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.csproj.AssemblyReference.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.GeneratedMSBuildEditorConfig.editorconfig
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.AssemblyInfoInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.AssemblyInfo.cs
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.csproj.CoreCompileInputs.cache
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.csproj.CopyComplete
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\refint\OpenRA.Mods.Cnc.dll
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.xml
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\OpenRA.Mods.Cnc.pdb
+F:\work\volmiTestProject\test-task-openra\OpenRA.Mods.Cnc\obj\Debug\ref\OpenRA.Mods.Cnc.dll
