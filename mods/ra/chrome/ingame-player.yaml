@@ -631,6 +631,7 @@ Container@PLAYER_WIDGETS:
 							Y: 4
 							ImageCollection: cash-icons
 							ImageName: cash-normal
+                        
 				LabelWithTooltip@POWER:
 					Logic: IngamePowerCounterLogic
 					X: PARENT_RIGHT - WIDTH - 30
@@ -651,5 +652,30 @@ Container@PLAYER_WIDGETS:
 			Logic: LoadIngameHierarchicalPathFinderOverlayLogic
 			X: WINDOW_RIGHT - WIDTH - 260
 			Y: 40
-			Width: 175
+			Width: 175 
+        Container@MEDIVAC_STATS_ROOT:
+			Logic: IngameMedicavStatsLogic
+			X: 10
+			Y: 0
+			Width: 400
+            Children:
+                Label@HEALED_LABEL:
+                    X: 30
+                    Y: 0
+                    Width: 100
+                    Height: 23
+                    TextColor: 008000
+                    Align: Center
+                    Text: label-mute-indicator
+                    Contrast: false       
+                Label@TRANSPORTED_LABEL:
+                    X: 250
+                    Y: 0
+                    Width: 100
+                    Height: 23
+                    TextColor: 008000
+                    Align: Center
+                    Text: label-mute-indicator
+                    Contrast: false            
+        
 

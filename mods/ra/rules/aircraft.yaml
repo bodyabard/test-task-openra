@@ -590,6 +590,7 @@ HEALTRAN:
 		TurnSpeed: 20
 		Speed: 128
 		AltitudeVelocity: 0c58
+        IsHealer: true
     AutoTarget:
 		InitialStance: AttackAnything
 		InitialStanceAI: HoldFire
@@ -643,5 +644,7 @@ HEALTRAN:
 	WithProductionIconOverlay:
 		Types: Veterancy
 		Prerequisites: aircraft.upgraded
+    PlayerStatistics:
+    UpdatesPlayerStatistics:
     RenderSprites:
 		Image: TRAN

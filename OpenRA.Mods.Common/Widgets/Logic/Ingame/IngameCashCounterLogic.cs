@@ -10,6 +10,7 @@
 #endregion
 
 using System;
+
 using System.Globalization;
 using OpenRA.Mods.Common.Traits;
 using OpenRA.Widgets;
@@ -28,6 +29,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		readonly Player player;
 		readonly PlayerResources playerResources;
 		readonly LabelWithTooltipWidget cashLabel;
+
 		readonly CachedTransform<(int Resources, int Capacity), string> siloUsageTooltipCache;
 
 		int nextCashTickTime = 0;
@@ -47,6 +49,8 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				TranslationProvider.GetString(SiloUsage, Translation.Arguments("usage", x.Resources, "capacity", x.Capacity)));
 			cashLabel = widget.Get<LabelWithTooltipWidget>("CASH");
 			cashLabel.GetTooltipText = () => siloUsageTooltip;
+
+
 		}
 
 		public override void Tick()

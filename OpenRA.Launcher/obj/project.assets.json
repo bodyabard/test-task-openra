@@ -1234,19 +1234,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Bohdan\\.nuget\\packages\\": {}
+    "C:\\Users\\Бодя\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\test-task-openra\\OpenRA.Launcher\\OpenRA.Launcher.csproj",
+      "projectUniqueName": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Launcher\\OpenRA.Launcher.csproj",
       "projectName": "OpenRA",
-      "projectPath": "D:\\test-task-openra\\OpenRA.Launcher\\OpenRA.Launcher.csproj",
-      "packagesPath": "C:\\Users\\Bohdan\\.nuget\\packages\\",
-      "outputPath": "D:\\test-task-openra\\OpenRA.Launcher\\obj\\",
+      "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Launcher\\OpenRA.Launcher.csproj",
+      "packagesPath": "C:\\Users\\Бодя\\.nuget\\packages\\",
+      "outputPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Launcher\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Bohdan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Бодя\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1260,8 +1260,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
-              "projectPath": "D:\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj"
+            "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj": {
+              "projectPath": "F:\\work\\volmiTestProject\\test-task-openra\\OpenRA.Game\\OpenRA.Game.csproj"
             }
           }
         }
@@ -1303,7 +1303,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

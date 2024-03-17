@@ -122,6 +122,8 @@ namespace OpenRA.Mods.Common.Traits
 	[RequireExplicitImplementation]
 	public interface INotifyKilled { void Killed(Actor self, AttackInfo e); }
 	[RequireExplicitImplementation]
+	public interface INotifyHealedByMedivac { void Healed(Actor self, AttackInfo e); }
+	[RequireExplicitImplementation]
 	public interface INotifyAppliedDamage { void AppliedDamage(Actor self, Actor damaged, AttackInfo e); }
 
 	[RequireExplicitImplementation]

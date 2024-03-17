@@ -121,7 +121,7 @@ namespace OpenRA
 		readonly INotifyBecomingIdle[] becomingIdles;
 		readonly INotifyIdle[] tickIdles;
 		readonly IEnumerable<WPos> enabledTargetableWorldPositions;
-		//readonly IMove 
+		//readonly IMove
 		bool created;
 
 		internal Actor(World world, string name, TypeDictionary initDict)

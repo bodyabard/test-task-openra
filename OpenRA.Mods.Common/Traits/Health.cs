@@ -59,6 +59,7 @@ namespace OpenRA.Mods.Common.Traits
 		IDamageModifier[] damageModifiersPlayer;
 		INotifyKilled[] notifyKilled;
 		INotifyKilled[] notifyKilledPlayer;
+		private INotifyHealedByMedivac[] notifyHealedPlayerByMedivac;
 
 		[Sync]
 		int hp;
@@ -200,6 +201,12 @@ namespace OpenRA.Mods.Common.Traits
 				DamageState = DamageState,
 				PreviousDamageState = oldState,
 			};
+			if (damage.Value < 0 && IsAttackerAircraft(attacker))
+			{
+				notifyHealedPlayerByMedivac = attacker.TraitsImplementing<INotifyHealedByMedivac>().ToArray();
+				foreach (var nd in notifyHealedPlayerByMedivac)
+					nd.Healed(self, ai);
+			}
 
 			foreach (var nd in notifyDamage)
 				nd.Damaged(self, ai);
@@ -228,6 +235,12 @@ namespace OpenRA.Mods.Common.Traits
 				if (RemoveOnDeath)
 					self.Dispose();
 			}
+		}
+
+		private bool IsAttackerAircraft(Actor actor)
+		{
+		//	return actor.TraitsImplementing<AircraftInfo>().Any() == true;
+		return actor.Info.HasTraitInfo<AircraftInfo>();
 		}
 
 		public void Kill(Actor self, Actor attacker, BitSet<DamageType> damageTypes)
