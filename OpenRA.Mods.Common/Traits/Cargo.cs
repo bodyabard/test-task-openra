@@ -406,8 +406,28 @@ namespace OpenRA.Mods.Common.Traits
 
 			if (!string.IsNullOrEmpty(Info.LoadedCondition))
 				loadedTokens.Push(self.GrantCondition(Info.LoadedCondition));
+
+			if (IsRecieverAircraft(self, out var aircraft))
+			{
+				if (aircraft.Info.IsHealer)
+				{
+					foreach (var nec in a.TraitsImplementing<INotifyEnteredMedivac>())
+						nec.OnEnteredCargo(a, self);
+				}				
+			}
 		}
 
+		private bool IsRecieverAircraft(Actor actor, out Aircraft aircraft)
+		{
+			aircraft = default;
+			if (actor.Info.HasTraitInfo<AircraftInfo>())
+			{
+				aircraft = actor.TraitOrDefault<Aircraft>();
+				return true;
+			}
+
+			return false;
+		}
 		void INotifyKilled.Killed(Actor self, AttackInfo e)
 		{
 			// IsAtGroundLevel contains Map.Contains(self.Location) check.

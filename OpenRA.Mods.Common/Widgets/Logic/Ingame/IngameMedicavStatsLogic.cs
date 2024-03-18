@@ -34,7 +34,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		public override void Tick()
 		{
 			healedLabel.GetText = () => $"Amount of units healed: {playerStatistics.HealedByMedivac}";
-			transportedLabel.GetText = () => "Amount of units transported: {0}";
+			transportedLabel.GetText = () => $"Amount of units transported: {playerStatistics.CargoByMedivac}";
 		}
 	}
 }

@@ -239,8 +239,7 @@ namespace OpenRA.Mods.Common.Traits
 
 		private bool IsAttackerAircraft(Actor actor)
 		{
-		//	return actor.TraitsImplementing<AircraftInfo>().Any() == true;
-		return actor.Info.HasTraitInfo<AircraftInfo>();
+			return actor.Info.HasTraitInfo<AircraftInfo>();
 		}
 
 		public void Kill(Actor self, Actor attacker, BitSet<DamageType> damageTypes)
